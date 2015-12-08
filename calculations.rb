@@ -11,26 +11,14 @@ def get_status(plane)
     end
 end
 
-def distance_to_next_plane(plane)
-  if plane[:id] == 1
-    5201
-  else
-    next_plane = Plane.where(id: plane[:id]-1)[0]
-    calculate_distance(next_plane)
-  end
-end
-
-
 def divert? (plane)
+  front_plane = Plane.where(id: plane[:id]-1)[0]
   if plane[:id] == 1
     false
+  elsif calculate_distance(front_plane) > 5200
+    false
   else
-    front_plane = Plane.where(id: plane[:id]-1)[0]
-    time = plane[:time] - time_of_landing(front_plane)
-    distance = time * plane[:speed]
-    if distance < 5200
-      true
-    end
+    true
   end
 end
 
@@ -39,11 +27,11 @@ def set_speed (plane)
     128
   else
     front_plane = Plane.where(id: plane[:id]-1)[0]
-    time = (64640 / front_plane[:speed]) - (plane[:time] - front_plane[:time])
+    time_in_air = (64640 / front_plane[:speed]) - (plane[:time] - front_plane[:time])
     speed = 104
     24.times do
       speed = speed + 1
-      distance = time * speed
+      distance = time_in_air * speed
       if distance > 64640 - 5200
         break
       end
@@ -52,12 +40,8 @@ def set_speed (plane)
   end
 end
 
-def time_in_air(plane)
-  Time.now.to_i - plane[:time]
-end
-
 def calculate_distance(plane)
-  time = time_in_air(plane)
+  time = Time.now.to_i - plane[:time]
   speed = plane[:speed]
   time * speed
 end

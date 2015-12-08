@@ -7,15 +7,14 @@ require 'date'
 
 after { ActiveRecord::Base.connection.close }
 
-get '/' do
-  "hello world"
-end
-
 post '/entry' do
   plane = Plane.create(flight: params[:flight], initial_altitude: params[:altitude], time:Time.now.to_i, speed: 128)
   if divert? (plane)
     plane.update(status: "diverted")
+  else
+    plane.update(speed: set_speed(plane))
   end
+
 end
 
 get '/tracking_info' do
