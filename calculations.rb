@@ -90,7 +90,9 @@ def calculate_altitude(plane)
     0
   elsif plane[:status] == "diverted"
     nil
-  10000-(Time.now.to_i - plane[:time]) * 9200 / (64640 / plane[:speed])
+  else
+    10000-(Time.now.to_i - plane[:time]) * 9200 / (64640 / plane[:speed])
+  end
 end
 
 def descent_speed(plane)
