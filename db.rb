@@ -14,6 +14,7 @@ class CreatePlanes < ActiveRecord::Migration
     t.integer :initial_altitude
     t.integer :time
     t.integer :speed
+    t.string :status
   end
 end
 
